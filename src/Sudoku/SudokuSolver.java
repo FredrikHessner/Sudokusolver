@@ -30,7 +30,7 @@ public interface SudokuSolver {
 	 */
 	void removeNumber(int row, int col);
 
-	/** LÃ¶ser sudokut och returnerar true om sudokut går att läsa. */
+	/** Löser sudokut och returnerar true om sudokut går att läsa. */
 	boolean solve();
 	
 	/** Returnerar siffrorna i sudokut. */
