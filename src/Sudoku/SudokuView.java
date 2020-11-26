@@ -14,6 +14,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -24,6 +25,7 @@ import javax.swing.border.EmptyBorder;
 public class SudokuView {
 	Solver sudokuSolver;
 	JTextField[][] input;
+	JFrame frame;
 
 	public SudokuView(int width, int height) {
 		SwingUtilities.invokeLater(() -> createWindow(width, height));
@@ -37,32 +39,23 @@ public class SudokuView {
 		int[][] grid = new int[9][9];
 		input = new JTextField[9][9];
 
-		JFrame frame = new JFrame("Sudoku");
+		frame = new JFrame("Sudoku");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		JButton upButton = new JButton("Solve");
 		upButton.setFocusPainted(false);
 		upButton.addActionListener(e -> {
 			sudokuSolver = new Solver();
-			for (int r = 0; r < sudokuSolver.getNumbers().length; r++) {
-				for (int c = 0; c < sudokuSolver.getNumbers().length; c++) {
-						if (input[r][c].getText().length() > 0) {
-							sudokuSolver.setNumber(r, c, Integer.parseInt(input[r][c].getText()));
+			if (fetchAllNumbers()) {
+				if (sudokuSolver.solve()) {
+					for (int r = 0; r < sudokuSolver.getNumbers().length; r++) {
+						for (int c = 0; c < sudokuSolver.getNumbers().length; c++) {
+							input[r][c].setText(String.valueOf(sudokuSolver.getNumber(r, c)));
 						}
 					}
-						/*JPanel p = new JPanel();
-						JTextArea j = new JTextArea(20, 20);
-						j.setToolTipText("Ej lösbar");
-						p.add(j);*/
+				} else {
+					showDialog("Sorry", "This can't be solved");
 				}
-			if (sudokuSolver.solve()) {
-				for (int r = 0; r < sudokuSolver.getNumbers().length; r++) {
-					for (int c = 0; c < sudokuSolver.getNumbers().length; c++) {
-						input[r][c].setText(String.valueOf(sudokuSolver.getNumber(r, c)));
-					}
-				}
-			} else {
-				System.out.println("Can't be solved");
 			}
 
 		});
@@ -70,11 +63,7 @@ public class SudokuView {
 		JButton downButton = new JButton("Clear");
 		downButton.setFocusPainted(false);
 		downButton.addActionListener(e -> {
-			for (int r = 0; r < sudokuSolver.getNumbers().length; r++) {
-				for (int c = 0; c < sudokuSolver.getNumbers().length; c++) {
-					input[r][c].setText(null);
-				}
-			}
+			sudokuSolver.clear();
 		});
 
 		JPanel commandPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
@@ -117,5 +106,39 @@ public class SudokuView {
 
 		frame.pack();
 		frame.setVisible(true);
+	}
+
+	private boolean fetchAllNumbers() {
+		for (int r = 0; r < sudokuSolver.getNumbers().length; r++) {
+			for (int c = 0; c < sudokuSolver.getNumbers().length; c++) {
+				if (input[r][c].getText().length() > 0) {
+					if(stringToInteger(input[r][c].getText()) != null) {					
+						int n = stringToInteger(input[r][c].getText());
+						if (n > 0 && n < 10) {
+							sudokuSolver.setNumber(r, c, n);
+						} else {
+							showDialog("Almost", "Only numbers between 1-9");
+							return false;
+						}
+					} else {
+						return false;
+					}
+				}
+			}
+		}
+		return true;
+	}
+	
+	private Integer stringToInteger(String number) {
+		try {
+			return Integer.parseInt(number);
+		} catch (NumberFormatException err) {
+			showDialog("STOP", "Only numbers");
+			return null;
+		}
+	}
+
+	private void showDialog(String title, String message) {
+		JOptionPane.showMessageDialog(frame, message, title, JOptionPane.INFORMATION_MESSAGE);
 	}
 }
