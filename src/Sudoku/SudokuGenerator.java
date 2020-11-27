@@ -11,7 +11,7 @@ public class SudokuGenerator {
 		rand = new Random();
 	}
 
-	public void GenerateGrid() {
+	public void generateGrid() {
 		for (int rowcol = 0; rowcol < 3; rowcol++) {
 			for (int r = 0; r < 3; r++) {
 				for (int c = 0; c < 3; c++) {
@@ -24,12 +24,11 @@ public class SudokuGenerator {
 			}
 		}
 		solver.solve();
-		
-		
+
 		for (int removeClues = 0; removeClues < 50; removeClues++) {
-			solver.setNumber(rand.nextInt(9),rand.nextInt(9), 0);
-			
-	}
+			solver.setNumber(rand.nextInt(9), rand.nextInt(9), 0);
+
+		}
 
 	}
 

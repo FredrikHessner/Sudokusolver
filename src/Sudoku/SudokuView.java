@@ -35,7 +35,6 @@ public class SudokuView {
 	 * Dispatch Thread (EDT).
 	 */
 	private void createWindow(int width, int height) {
-		int[][] grid = new int[9][9];
 		input = new JTextField[9][9];
 		sudokuSolver = new Solver();
 
@@ -45,6 +44,7 @@ public class SudokuView {
 		JButton upButton = new JButton("Solve");
 		upButton.setFocusPainted(false);
 		upButton.addActionListener(e -> {
+			sudokuSolver.clear();
 			for (int r = 0; r < sudokuSolver.getNumbers().length; r++) {
 				for (int c = 0; c < sudokuSolver.getNumbers().length; c++) {
 					if (input[r][c].getText().length() > 0) {
@@ -79,16 +79,14 @@ public class SudokuView {
 		leftButton.setFocusPainted(false);
 		leftButton.addActionListener(e -> {
 			generator = new SudokuGenerator();
-			generator.GenerateGrid();
+			generator.generateGrid();
 			int[][] generatedGrid = generator.getGeneratedGrid();
-			sudokuSolver.setNumbers(generatedGrid);
-			for (int r = 0; r < sudokuSolver.getNumbers().length; r++) {
-				for (int c = 0; c < sudokuSolver.getNumbers().length; c++) {
-					if (String.valueOf(sudokuSolver.getNumber(r, c)).equals("0")) {
+			for (int r = 0; r < generatedGrid.length; r++) {
+				for (int c = 0; c < generatedGrid.length; c++) {
+					if (generatedGrid[r][c] == 0) {
 						input[r][c].setText(null);
-						sudokuSolver.setNumber(r, c, 0);
 					} else {
-						input[r][c].setText(String.valueOf(sudokuSolver.getNumber(r, c)));
+						input[r][c].setText(String.valueOf(generatedGrid[r][c]));
 					}
 				}
 			}
@@ -105,8 +103,8 @@ public class SudokuView {
 
 		Font font = new Font("SansSerif", Font.BOLD, 20);
 
-		for (int row = 0; row < grid.length; row++) {
-			for (int col = 0; col < grid.length; col++) {
+		for (int row = 0; row < 9; row++) {
+			for (int col = 0; col < 9; col++) {
 				input[row][col] = new JTextField();
 				input[row][col].setBorder(new EmptyBorder(5, 5, 5, 5));
 				input[row][col].setHorizontalAlignment(SwingConstants.CENTER);

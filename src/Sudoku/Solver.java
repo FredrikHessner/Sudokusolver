@@ -33,13 +33,9 @@ public class Solver implements SudokuSolver {
 			}
 		}
 		for (int i = 0; i < grid.length; i++) {
-			if (grid[row][i] == number || grid[i][col] == number) {
-				//Don't check with it self
-				if(!(i == row || i == col)) {
-					return false;
-				}
+			if ((grid[row][i] == number && i != col) || (grid[i][col] == number && i != row)) {
+				return false;
 			}
-
 		}
 		return true;
 	}
@@ -59,6 +55,7 @@ public class Solver implements SudokuSolver {
 	public boolean solve() {
 		for(int r = 0; r < grid.length; r++) {
 			for(int c = 0; c < grid.length; c++) {
+				System.out.println(getNumber(r, c));
 				if(getNumber(r,c) != 0 && !trySetNumber(r,c,getNumber(r,c))) {
 					return false;
 				}
@@ -70,7 +67,6 @@ public class Solver implements SudokuSolver {
 	private boolean solve(int r, int c) {
 		int nextRow = r;
 		int nextCol = c + 1;
-		System.out.println(r + " " + c);
 		if (nextCol == 9) {
 			nextRow = r + 1;
 			nextCol = 0;
