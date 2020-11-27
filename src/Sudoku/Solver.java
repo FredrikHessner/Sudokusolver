@@ -70,6 +70,7 @@ public class Solver implements SudokuSolver {
 	private boolean solve(int r, int c) {
 		int nextRow = r;
 		int nextCol = c + 1;
+		System.out.println(r + " " + c);
 		if (nextCol == 9) {
 			nextRow = r + 1;
 			nextCol = 0;

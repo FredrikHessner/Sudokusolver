@@ -24,6 +24,7 @@ import javax.swing.border.EmptyBorder;
 public class SudokuView {
 	Solver sudokuSolver;
 	JTextField[][] input;
+	SudokuGenerator generator;
 
 	public SudokuView(int width, int height) {
 		SwingUtilities.invokeLater(() -> createWindow(width, height));
@@ -36,6 +37,7 @@ public class SudokuView {
 	private void createWindow(int width, int height) {
 		int[][] grid = new int[9][9];
 		input = new JTextField[9][9];
+		sudokuSolver = new Solver();
 
 		JFrame frame = new JFrame("Sudoku");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -43,18 +45,13 @@ public class SudokuView {
 		JButton upButton = new JButton("Solve");
 		upButton.setFocusPainted(false);
 		upButton.addActionListener(e -> {
-			sudokuSolver = new Solver();
 			for (int r = 0; r < sudokuSolver.getNumbers().length; r++) {
 				for (int c = 0; c < sudokuSolver.getNumbers().length; c++) {
-						if (input[r][c].getText().length() > 0) {
-							sudokuSolver.setNumber(r, c, Integer.parseInt(input[r][c].getText()));
-						}
+					if (input[r][c].getText().length() > 0) {
+						sudokuSolver.setNumber(r, c, Integer.parseInt(input[r][c].getText()));
 					}
-						/*JPanel p = new JPanel();
-						JTextArea j = new JTextArea(20, 20);
-						j.setToolTipText("Ej lösbar");
-						p.add(j);*/
 				}
+			}
 			if (sudokuSolver.solve()) {
 				for (int r = 0; r < sudokuSolver.getNumbers().length; r++) {
 					for (int c = 0; c < sudokuSolver.getNumbers().length; c++) {
@@ -70,16 +67,38 @@ public class SudokuView {
 		JButton downButton = new JButton("Clear");
 		downButton.setFocusPainted(false);
 		downButton.addActionListener(e -> {
-			for (int r = 0; r < sudokuSolver.getNumbers().length; r++) {
-				for (int c = 0; c < sudokuSolver.getNumbers().length; c++) {
+			sudokuSolver.clear();
+			for (int r = 0; r < input.length; r++) {
+				for (int c = 0; c < input.length; c++) {
 					input[r][c].setText(null);
 				}
 			}
 		});
 
+		JButton leftButton = new JButton("Generate grid");
+		leftButton.setFocusPainted(false);
+		leftButton.addActionListener(e -> {
+			generator = new SudokuGenerator();
+			generator.GenerateGrid();
+			int[][] generatedGrid = generator.getGeneratedGrid();
+			sudokuSolver.setNumbers(generatedGrid);
+			for (int r = 0; r < sudokuSolver.getNumbers().length; r++) {
+				for (int c = 0; c < sudokuSolver.getNumbers().length; c++) {
+					if (String.valueOf(sudokuSolver.getNumber(r, c)).equals("0")) {
+						input[r][c].setText(null);
+						sudokuSolver.setNumber(r, c, 0);
+					} else {
+						input[r][c].setText(String.valueOf(sudokuSolver.getNumber(r, c)));
+					}
+				}
+			}
+
+		});
+
 		JPanel commandPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
 		commandPanel.add(upButton);
 		commandPanel.add(downButton);
+		commandPanel.add(leftButton);
 
 		JPanel board = new JPanel();
 		board.setPreferredSize(new Dimension(width, height));
