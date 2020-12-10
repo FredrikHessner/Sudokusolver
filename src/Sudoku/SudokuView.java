@@ -38,22 +38,7 @@ public class SudokuView {
 
 		JButton upButton = new JButton("Solve");
 		upButton.setFocusPainted(false);
-		upButton.addActionListener(e -> {
-			sudokuSolver = new Solver();
-			if (fetchAllNumbers()) {
-				if (sudokuSolver.solve()) {
-					for (int r = 0; r < sudokuSolver.getNumbers().length; r++) {
-						for (int c = 0; c < sudokuSolver.getNumbers().length; c++) {
-							input[r][c].setText(String.valueOf(sudokuSolver.getNumber(r, c)));
-						}
-					}
-				} else {
-					showDialog("Sorry", "This can't be solved");
-				}
-
-			}
-
-		});
+		upButton.addActionListener(e -> solveSudoku());
 
 		JButton downButton = new JButton("Clear");
 		downButton.setFocusPainted(false);
@@ -68,21 +53,7 @@ public class SudokuView {
 
 		JButton leftButton = new JButton("Generate grid");
 		leftButton.setFocusPainted(false);
-		leftButton.addActionListener(e -> {
-			generator = new SudokuGenerator();
-			generator.generateGrid();
-			int[][] generatedGrid = generator.getGeneratedGrid();
-			for (int r = 0; r < generatedGrid.length; r++) {
-				for (int c = 0; c < generatedGrid.length; c++) {
-					if (generatedGrid[r][c] == 0) {
-						input[r][c].setText(null);
-					} else {
-						input[r][c].setText(String.valueOf(generatedGrid[r][c]));
-					}
-				}
-			}
-
-		});
+		leftButton.addActionListener(e -> generateSudoku());
 
 		JPanel commandPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
 		commandPanel.add(upButton);
@@ -92,24 +63,9 @@ public class SudokuView {
 		JPanel board = new JPanel();
 		board.setPreferredSize(new Dimension(width, height));
 
-		Font font = new Font("SansSerif", Font.BOLD, 20);
-
 		for (int row = 0; row < 9; row++) {
 			for (int col = 0; col < 9; col++) {
-				input[row][col] = new JTextField();
-				input[row][col].setBorder(new EmptyBorder(5, 5, 5, 5));
-				input[row][col].setHorizontalAlignment(SwingConstants.CENTER);
-				input[row][col].setFont(font);
-				input[row][col].setText("");
-
-				// Fill if square index is even
-				int divideRow = row / 3;
-				int divideCol = col / 3;
-				if ((divideRow + divideCol) % 2 == 0) {
-					input[row][col].setBackground(Color.DARK_GRAY);
-					input[row][col].setForeground(Color.white);
-				}
-
+				initTextField(row, col);
 				board.add(input[row][col]);
 			}
 		}
@@ -126,6 +82,38 @@ public class SudokuView {
 		frame.pack();
 		frame.setVisible(true);
 	}
+	
+	private void solveSudoku() {
+		sudokuSolver.clear();
+		if (fetchAllNumbers()) {
+			if (sudokuSolver.solve()) {
+				for (int r = 0; r < sudokuSolver.getNumbers().length; r++) {
+					for (int c = 0; c < sudokuSolver.getNumbers().length; c++) {
+						input[r][c].setText(String.valueOf(sudokuSolver.getNumber(r, c)));
+					}
+				}
+			} else {
+				showDialog("Sorry", "This can't be solved");
+			}
+
+		}	
+	}
+	
+	private void generateSudoku() {
+		generator = new SudokuGenerator();
+		generator.generateGrid();
+		int[][] generatedGrid = generator.getGeneratedGrid();
+		for (int r = 0; r < generatedGrid.length; r++) {
+			for (int c = 0; c < generatedGrid.length; c++) {
+				if (generatedGrid[r][c] == 0) {
+					input[r][c].setText(null);
+				} else {
+					input[r][c].setText(String.valueOf(generatedGrid[r][c]));
+				}
+			}
+		}
+
+	}
 
 	private boolean fetchAllNumbers() {
 		for (int r = 0; r < sudokuSolver.getNumbers().length; r++) {
@@ -133,13 +121,16 @@ public class SudokuView {
 				if (input[r][c].getText().length() > 0) {
 					if(stringToInteger(input[r][c].getText()) != null) {					
 						int n = stringToInteger(input[r][c].getText());
+						
 						if (n > 0 && n < 10) {
 							sudokuSolver.setNumber(r, c, n);
 						} else {
 							showDialog("Almost", "Only numbers between 1-9");
 							return false;
 						}
+						
 					} else {
+						showDialog("STOP", "Only numbers");
 						return false;
 					}
 				}
@@ -148,11 +139,28 @@ public class SudokuView {
 		return true;
 	}
 	
+	private void initTextField(int row, int col) {
+		Font font = new Font("SansSerif", Font.BOLD, 20);
+		
+		input[row][col] = new JTextField();
+		input[row][col].setBorder(new EmptyBorder(5, 5, 5, 5));
+		input[row][col].setHorizontalAlignment(SwingConstants.CENTER);
+		input[row][col].setFont(font);
+		input[row][col].setText("");
+
+		// Fill if square index is even
+		int divideRow = row / 3;
+		int divideCol = col / 3;
+		if ((divideRow + divideCol) % 2 == 0) {
+			input[row][col].setBackground(Color.DARK_GRAY);
+			input[row][col].setForeground(Color.white);
+		}
+	}
+	
 	private Integer stringToInteger(String number) {
 		try {
 			return Integer.parseInt(number);
 		} catch (NumberFormatException err) {
-			showDialog("STOP", "Only numbers");
 			return null;
 		}
 	}

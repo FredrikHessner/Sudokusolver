@@ -1,7 +1,7 @@
 package Sudoku;
 
 public interface SudokuSolver {
-	/** Tömmer hela sudokut */
+	/** Clears the whole sudoku */
 	void clear(); 
 
 	/**

@@ -68,14 +68,16 @@ public class Solver implements SudokuSolver {
 
 	private boolean solve(int r, int c) {
 		int nextRow = r;
-		int nextCol = c + 1;
-		if (nextCol == 9) {
-			nextRow = r + 1;
-			nextCol = 0;
+		int nextCol = (c + 1) % 9;
+		if (nextCol == 0) {
+			nextRow++;
 		}
+		
+		//Finished with the whole board
 		if (nextRow == 9 && nextCol == 1) {
 			return true;
 		}
+		
 		if (getNumber(r, c) == 0) {
 			for (int nextNumber = 1; nextNumber < 10; nextNumber++) {
 				if (trySetNumber(r, c, nextNumber)) {
@@ -83,7 +85,7 @@ public class Solver implements SudokuSolver {
 					if (solve(nextRow, nextCol)) {
 						return true;
 					} else {
-						setNumber(r, c, 0);
+						removeNumber(r, c);
 					}
 				}
 			}
