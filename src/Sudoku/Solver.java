@@ -55,7 +55,6 @@ public class Solver implements SudokuSolver {
 	public boolean solve() {
 		for(int r = 0; r < grid.length; r++) {
 			for(int c = 0; c < grid.length; c++) {
-				System.out.println(getNumber(r, c));
 				if(getNumber(r,c) != 0 && !trySetNumber(r,c,getNumber(r,c))) {
 					return false;
 				}
