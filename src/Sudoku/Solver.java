@@ -1,9 +1,11 @@
 package Sudoku;
 
-import java.util.Random;
-
 public class Solver implements SudokuSolver {
-	int[][] grid = new int[9][9];
+	private int[][] grid;
+
+	public Solver() {
+		grid = new int[9][9];
+	}
 
 	@Override
 	public void clear() {
@@ -14,11 +16,11 @@ public class Solver implements SudokuSolver {
 	@Override
 	public void setNumber(int row, int col, int number) {
 		grid[row][col] = number;
-
 	}
 
 	@Override
 	public boolean trySetNumber(int row, int col, int number) {
+		//Get each index of the numbers inside the square belonging to the number inside [row][col]
 		for (int squareRow = 0; squareRow < 3; squareRow++) {
 			for (int squareCol = 0; squareCol < 3; squareCol++) {
 				int divideRow = row / 3;
@@ -26,16 +28,17 @@ public class Solver implements SudokuSolver {
 				
 				int rowIndex = divideRow * 3 + squareRow;
 				int colIndex = divideCol * 3 + squareCol;
-				//Don't check with it self
+				// Don't check with it self
 				if (grid[rowIndex][colIndex] == number && !(rowIndex == row && colIndex == col)) {
 					return false;
 				}
 			}
 		}
+		//Test the horizontal and vertical axis
 		for (int i = 0; i < grid.length; i++) {
 			if (grid[row][i] == number || grid[i][col] == number) {
-				//Don't check with it self
-				if(!(i == row || i == col)) {
+				// Don't check with it self
+				if (!(i == row || i == col)) {
 					return false;
 				}
 			}
@@ -52,14 +55,14 @@ public class Solver implements SudokuSolver {
 	@Override
 	public void removeNumber(int row, int col) {
 		grid[row][col] = 0;
-
 	}
 
 	@Override
 	public boolean solve() {
-		for(int r = 0; r < grid.length; r++) {
-			for(int c = 0; c < grid.length; c++) {
-				if(getNumber(r,c) != 0 && !trySetNumber(r,c,getNumber(r,c))) {
+		//Check if the board is even solvable with current input
+		for (int r = 0; r < grid.length; r++) {
+			for (int c = 0; c < grid.length; c++) {
+				if (getNumber(r, c) != 0 && !trySetNumber(r, c, getNumber(r, c))) {
 					return false;
 				}
 			}
