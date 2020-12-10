@@ -15,12 +15,13 @@ public interface SudokuSolver {
 	void setNumber(int row, int col, int number);
 	
 	/**
-	 * Checks weather number can be put in the row & col, return false if not
+	 * Checks weather number can be put in the row and col, return false if not
 	 * 
 	 * @param row    The row
 	 * @param col    The column
 	 * @param number The digit to insert
 	 * @throws IllegalArgumentException if number not in [1..9] or row or col is outside the allowed range
+	 * @return boolean Returns true if number can be placed in row col
 	 */
 	boolean trySetNumber(int row, int col, int number);
 	
@@ -45,20 +46,21 @@ public interface SudokuSolver {
 
 	/**
 	 * Solves the sudoku and returns true if possible
+	 * @return Returns true if sudoku can be solved
 	 */
 	boolean solve();
 	
 	/**
 	 * Returns all the numbers in the sudoku grid
 	 * 
-	 * @return Integer[][] All numbers in grid 9x9
+	 * @return int[][] All numbers in grid 9x9
 	 */
 	int[][] getNumbers();
 	
 	/**
 	 * Set the numbers in the grid
 	 * 
-	 * @param int[][] 	The numbers in the grid
+	 * @param numbers[][]	The numbers in the grid
 	 * @throws IllegalArgumentException if not all numbers in [1..9]
 	 **/
 	void setNumbers(int[][] numbers);
