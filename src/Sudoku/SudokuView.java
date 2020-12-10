@@ -19,6 +19,7 @@ public class SudokuView {
 	Solver sudokuSolver;
 	JTextField[][] input;
 	JFrame frame;
+	SudokuGenerator generator;
 
 	public SudokuView(int width, int height) {
 		SwingUtilities.invokeLater(() -> createWindow(width, height));
@@ -29,8 +30,8 @@ public class SudokuView {
 	 * Dispatch Thread (EDT).
 	 */
 	private void createWindow(int width, int height) {
-		int[][] grid = new int[9][9];
 		input = new JTextField[9][9];
+		sudokuSolver = new Solver();
 
 		frame = new JFrame("Sudoku");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -49,6 +50,7 @@ public class SudokuView {
 				} else {
 					showDialog("Sorry", "This can't be solved");
 				}
+
 			}
 
 		});
@@ -57,19 +59,43 @@ public class SudokuView {
 		downButton.setFocusPainted(false);
 		downButton.addActionListener(e -> {
 			sudokuSolver.clear();
+			for (int r = 0; r < input.length; r++) {
+				for (int c = 0; c < input.length; c++) {
+					input[r][c].setText(null);
+				}
+			}
+		});
+
+		JButton leftButton = new JButton("Generate grid");
+		leftButton.setFocusPainted(false);
+		leftButton.addActionListener(e -> {
+			generator = new SudokuGenerator();
+			generator.generateGrid();
+			int[][] generatedGrid = generator.getGeneratedGrid();
+			for (int r = 0; r < generatedGrid.length; r++) {
+				for (int c = 0; c < generatedGrid.length; c++) {
+					if (generatedGrid[r][c] == 0) {
+						input[r][c].setText(null);
+					} else {
+						input[r][c].setText(String.valueOf(generatedGrid[r][c]));
+					}
+				}
+			}
+
 		});
 
 		JPanel commandPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
 		commandPanel.add(upButton);
 		commandPanel.add(downButton);
+		commandPanel.add(leftButton);
 
 		JPanel board = new JPanel();
 		board.setPreferredSize(new Dimension(width, height));
 
 		Font font = new Font("SansSerif", Font.BOLD, 20);
 
-		for (int row = 0; row < grid.length; row++) {
-			for (int col = 0; col < grid.length; col++) {
+		for (int row = 0; row < 9; row++) {
+			for (int col = 0; col < 9; col++) {
 				input[row][col] = new JTextField();
 				input[row][col].setBorder(new EmptyBorder(5, 5, 5, 5));
 				input[row][col].setHorizontalAlignment(SwingConstants.CENTER);

@@ -36,13 +36,9 @@ public class Solver implements SudokuSolver {
 		}
 		//Test the horizontal and vertical axis
 		for (int i = 0; i < grid.length; i++) {
-			if (grid[row][i] == number || grid[i][col] == number) {
-				// Don't check with it self
-				if (!(i == row || i == col)) {
-					return false;
-				}
+			if ((grid[row][i] == number && i != col) || (grid[i][col] == number && i != row)) {
+				return false;
 			}
-
 		}
 		return true;
 	}
