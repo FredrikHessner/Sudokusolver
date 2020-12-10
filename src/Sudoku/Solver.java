@@ -15,11 +15,13 @@ public class Solver implements SudokuSolver {
 
 	@Override
 	public void setNumber(int row, int col, int number) {
+		isValidInput(row, col, number);
 		grid[row][col] = number;
 	}
 
 	@Override
 	public boolean trySetNumber(int row, int col, int number) {
+		isValidInput(row, col, number);
 		//Get each index of the numbers inside the square belonging to the number inside [row][col]
 		for (int squareRow = 0; squareRow < 3; squareRow++) {
 			for (int squareCol = 0; squareCol < 3; squareCol++) {
@@ -45,11 +47,13 @@ public class Solver implements SudokuSolver {
 
 	@Override
 	public int getNumber(int row, int col) {
+		isValidInput(row, col);
 		return grid[row][col];
 	}
 
 	@Override
 	public void removeNumber(int row, int col) {
+		isValidInput(row, col);
 		grid[row][col] = 0;
 	}
 
@@ -105,7 +109,25 @@ public class Solver implements SudokuSolver {
 
 	@Override
 	public void setNumbers(int[][] numbers) {
+		for(int r = 0; r < numbers.length; r++) {
+			for(int c = 0; c < numbers[r].length; c++) {
+				isValidInput(r, c, numbers[r][c]);
+			}
+		}
 		grid = numbers;
+	}
+	
+	
+	private void isValidInput(int row, int col) {
+		if(row < 0 || row > 8 || col < 0 || col > 8) {
+			throw new IllegalArgumentException("Row and col can only be between 0-8");
+		}
+	}
+	
+	private void isValidInput(int row, int col, int number) {
+		if(row < 0 || row > 8 || col < 0 || col > 8 || number < 1 || number > 9) {
+			throw new IllegalArgumentException("Row and col can only be between 0-8 and number between 1-9");
+		}
 	}
 
 }

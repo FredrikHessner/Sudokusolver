@@ -10,7 +10,7 @@ public interface SudokuSolver {
 	 * @param row    The row
 	 * @param col    The column
 	 * @param number The digit to insert
-	 * @throws IllegalArgumentException if number not in [0..8] or row or col is outside the allowed range
+	 * @throws IllegalArgumentException if number not in [1..9] or row or col is outside the allowed range
 	 */
 	void setNumber(int row, int col, int number);
 	
@@ -20,7 +20,7 @@ public interface SudokuSolver {
 	 * @param row    The row
 	 * @param col    The column
 	 * @param number The digit to insert
-	 * @throws IllegalArgumentException if number not in [0..8] or row or col is outside the allowed range
+	 * @throws IllegalArgumentException if number not in [1..9] or row or col is outside the allowed range
 	 */
 	boolean trySetNumber(int row, int col, int number);
 	
@@ -59,7 +59,7 @@ public interface SudokuSolver {
 	 * Set the numbers in the grid
 	 * 
 	 * @param int[][] 	The numbers in the grid
-	 * @throws IllegalArgumentException if not all numbers in [0..8]
+	 * @throws IllegalArgumentException if not all numbers in [1..9]
 	 **/
 	void setNumbers(int[][] numbers);
 }

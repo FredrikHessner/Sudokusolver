@@ -26,7 +26,7 @@ public class SudokuGenerator {
 		solver.solve();
 
 		for (int removeClues = 0; removeClues < 50; removeClues++) {
-			solver.setNumber(rand.nextInt(9), rand.nextInt(9), 0);
+			solver.removeNumber(rand.nextInt(9), rand.nextInt(9));
 		}
 
 	}
